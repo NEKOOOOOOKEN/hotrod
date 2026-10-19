@@ -353,6 +353,7 @@ const G = {
   score: 0, best: 0,
   level: 1, levelPop: 0,
   surgeIn: 9, surgeWarn: 0, // 上涌倒计时 / 预警剩余
+  handY: 0,                 // 手的握点（跟鼠标）
   runT: 0, maxP: 0,
   chain: 0, maxChain: 0,    // 危险区连续维持秒数
   dist: 0,                  // 总撸动距离(px)
@@ -1082,7 +1083,7 @@ function startGame() {
   G.state = 'playing';
   G.p = 0; G.score = 0; G.runT = 0; G.maxP = 0;
   G.chain = 0; G.maxChain = 0; G.dist = 0; G.rubDist = 0;
-  G.lastDir = 0; G.vel = 0; G.lastMult = 1;
+  G.lastDir = 0; G.vel = 0; G.lastMult = 1; G.handY = L.cy;
   G.level = 1; G.levelPop = 0;
   G.surgeIn = 9; G.surgeWarn = 0;
   G.explodeT = 0; G.parts.length = 0; G.stains.length = 0; G.pops.length = 0;
@@ -1455,6 +1456,14 @@ function update(dt, now) {
   G.shake = Math.max(0, G.shake - dt * (G.shake * 5 + 3));
   G.scorePop = Math.max(0, G.scorePop - dt * 2.6);
   G.vel = Math.max(0, G.vel - dt * 9000);
+
+  // 手跟着光标上下走：鼠标在罐子上就跟鼠标，离开就回到罐子中线附近
+  {
+    const hh = L.canH * (0.93 + 0.215 * Math.pow(clamp(G.p / 100, 0, 1), 0.85));
+    const lo = L.cy - hh * 0.34, hi = L.cy + hh * 0.30;
+    const want = G.pointer.inCan ? clamp(G.pointer.y, lo, hi) : L.cy - hh * 0.06;
+    G.handY += (want - G.handY) * Math.min(1, dt * 16);
+  }
 
   // 灰尘
   for (const d of G.dust) {
@@ -2145,9 +2154,9 @@ function drawHand(now) {
   const ox = Math.sin(now * 43) * G.shake * 0.55;
   const oy = Math.cos(now * 57) * G.shake * 0.4;
 
-  // 手指压着罐身，位置随压力轻微上移
+  // 握点跟着鼠标走（G.handY 在 update 里缓动），再叠一点呼吸/抖动
   const x = L.cx - hw * HAND_GRIP.x + ox;
-  const y = L.cy - hs * HAND_GRIP.y + bob + oy - hh * 0.09 * p;
+  const y = (G.handY + bob + oy) - hs * HAND_GRIP.y;
 
   // 缓冲：先画进来，再压暗 / 泛红，免得像贴纸
   const bw = Math.ceil(hw), bh = Math.ceil(hs);
@@ -2175,7 +2184,7 @@ function drawHand(now) {
 
   ctx.save();
   ctx.translate(x + hw * HAND_GRIP.x, y + hs * HAND_GRIP.y);
-  ctx.rotate(-0.02 + Math.sin(now * 0.0013) * 0.007);
+  ctx.rotate(-0.02 + Math.sin(now * 0.0013) * 0.007 + clamp(G.vel * 0.00003, -0.06, 0.06));
   ctx.shadowColor = 'rgba(0,0,0,.62)';
   ctx.shadowBlur = 16 + 10 * warn;
   ctx.shadowOffsetX = 10;
@@ -2301,15 +2310,21 @@ function drawGauge(now) {
   ctx.font = `700 ${Math.max(9, w * 0.30)}px ${FONT}`;
   ctx.fillText('压 力', x, py + w * 0.85);
 
+  // 一整条「圆底烧瓶」轮廓：上端半圆 + 直筒 + 圆肩 + 下半球，一笔画完，不会有多余的横线
   const tubePath = () => {
+    const hw = w / 2, R = bulbR, yc = cyB;
+    // 颈部和球体相切：切点取 φ=48°，中间用二次曲线过渡，做出自然的圆底烧瓶
+    const phi = 0.838, cph = Math.cos(phi), sph = Math.sin(phi);
+    const yJoin = yc + (hw * cph - R) / sph;   // 直筒开始收口的高度
+    const ptx = R * cph, pty = yc - R * sph;   // 右切点
     ctx.beginPath();
-    ctx.moveTo(x - w / 2, cyB);
-    ctx.lineTo(x - w / 2, top + w / 2);
-    ctx.arc(x, top + w / 2, w / 2, Math.PI, 0, false);
-    ctx.lineTo(x + w / 2, cyB);
+    ctx.moveTo(x - hw, top + hw);
+    ctx.arc(x, top + hw, hw, Math.PI, 0, false);
+    ctx.lineTo(x + hw, yJoin);
+    ctx.quadraticCurveTo(x + hw, yc - R * 0.72, x + ptx, pty);
+    ctx.arc(x, yc, R, phi, Math.PI - phi, false);
+    ctx.quadraticCurveTo(x - hw, yc - R * 0.72, x - hw, yJoin);
     ctx.closePath();
-    ctx.moveTo(x + bulbR, cyB);
-    ctx.arc(x, cyB, bulbR, 0, Math.PI * 2, false);
   };
 
   // 轨道
@@ -2360,7 +2375,7 @@ function drawGauge(now) {
       ctx.shadowColor = `rgba(255,50,20,${0.55 + 0.4 * pulse})`;
       ctx.shadowBlur = 22 * warn;
     }
-    ctx.fillRect(x - w, yLevel, w * 2, bot - yLevel + 2);
+    ctx.fillRect(x - w * 1.2, yLevel, w * 2.4, bot - yLevel + 1);
     ctx.shadowBlur = 0;
   } else {
     // 失灵：整根管子糊掉，只有故障噪点
@@ -2374,23 +2389,14 @@ function drawGauge(now) {
     }
   }
 
-  // 底线以下的区域（冷色，掉进去就瘪）——画在液柱之上，才看得出「这一段在底线下面」
+  // 底线以下：整段压成黑色（掉进去就瘪）
   if (G.floor > 0.4) {
-    ctx.fillStyle = `rgba(80,150,255,${0.13 + 0.07 * pulse})`;
-    ctx.fillRect(x - w, yFloor, w * 2, bot - yFloor + w * 3);
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x - w, yFloor, w * 2, bot - yFloor + w * 3);
-    ctx.clip();
-    ctx.strokeStyle = `rgba(150,200,255,${0.16 + 0.10 * pulse})`;
-    ctx.lineWidth = 1.1;
-    for (let yy = yFloor; yy < bot + w * 2; yy += Math.max(6, w * 0.45)) {
-      ctx.beginPath();
-      ctx.moveTo(x - w, yy);
-      ctx.lineTo(x + w, yy - w * 1.6);
-      ctx.stroke();
-    }
-    ctx.restore();
+    const bg = ctx.createLinearGradient(0, yFloor, 0, bot + bulbR * 0.2);
+    bg.addColorStop(0, 'rgba(3,4,6,.72)');
+    bg.addColorStop(0.25, 'rgba(2,3,5,.92)');
+    bg.addColorStop(1, 'rgba(1,2,3,.98)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(x - w * 1.2, yFloor, w * 2.4, bot - yFloor + w * 3);
   }
 
   // 玻璃反光
@@ -2400,7 +2406,7 @@ function drawGauge(now) {
   gloss.addColorStop(0.75, 'rgba(0,0,0,.10)');
   gloss.addColorStop(1, 'rgba(0,0,0,.22)');
   ctx.fillStyle = gloss;
-  ctx.fillRect(x - w / 2, top, w, bot - top);
+  ctx.fillRect(x - w / 2, top, w, (cyB - bulbR * 0.78) - top);
 
   ctx.restore();
 
