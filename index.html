@@ -2474,10 +2474,10 @@ function drawGauge(now) {
   ctx.lineTo(px + pw - 4, yTop);
   ctx.stroke();
   ctx.restore();
-  ctx.textAlign = 'right';
+  ctx.textAlign = 'center';
   ctx.fillStyle = lineLow ? '#ff3d1f' : `rgba(255,70,40,${0.78 + 0.22 * pulse})`;
   ctx.font = `800 ${Math.max(8, w * 0.28)}px ${FONT}`;
-  ctx.fillText(`${Math.round(G.explodeAt)} · 爆炸线`, px + pw - 8, yTop - w * 0.62);
+  ctx.fillText(`${Math.round(G.explodeAt)} · 爆炸线`, x, yTop - w * 0.62);
 
   // 当前液位指针
   if (!blind) {
@@ -2498,6 +2498,23 @@ function drawGauge(now) {
   ctx.lineTo(x + w * 1.5 + 7, yLevel + 4);
   ctx.closePath();
   ctx.fill();
+
+  // 指针上方的实时压力读数（贴在指针上，随它上下走）
+  const rtxt = Math.round(G.p) + '%';
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `800 ${Math.max(9, w * 0.30)}px ${FONT}`;
+  const rw = ctx.measureText(rtxt).width + w * 0.42;
+  const ry = yLevel - w * 0.86;
+  ctx.fillStyle = 'rgba(6,8,10,.82)';
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x - rw / 2, ry - w * 0.42, rw, w * 0.84, w * 0.24);
+  else ctx.rect(x - rw / 2, ry - w * 0.42, rw, w * 0.84);
+  ctx.fill();
+  ctx.fillStyle = G.p >= G.explodeAt - 4 ? '#ff6a4a' : '#fff';
+  ctx.fillText(rtxt, x, ry + w * 0.02);
+  ctx.restore();
   }
 
   // 维持倍率环
