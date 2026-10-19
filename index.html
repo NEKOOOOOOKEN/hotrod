@@ -3035,9 +3035,6 @@ function draw(now) {
   }
 
   drawCan(now);
-  if (G.state === 'playing' || G.state === 'exploding') {
-    drawHand(now);
-  }
   if (G.state === 'playing') {
     drawCursor(now);
     drawGauge(now);
