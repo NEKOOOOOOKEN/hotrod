@@ -2292,12 +2292,23 @@ function drawGauge(now) {
   ctx.lineWidth = 1.4;
   ctx.stroke();
 
-  // 标题
+  // 顶部：实时压力（大号，替掉原来的「压力」标题）
+  ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(247,239,226,.5)';
-  ctx.font = `700 ${Math.max(9, w * 0.30)}px ${FONT}`;
-  ctx.fillText('压 力', x, py + w * 0.85);
+  const hotNow = G.p >= G.explodeAt - 4;
+  ctx.font = `900 ${Math.max(16, w * 0.82)}px ${FONT}`;
+  ctx.shadowColor = hotNow ? 'rgba(255,60,20,.85)' : 'rgba(0,0,0,.85)';
+  ctx.shadowBlur = hotNow ? 16 : 6;
+  ctx.fillStyle = hotNow ? '#ff5a3c' : (G.evBlind > 0 ? 'rgba(247,239,226,.45)' : '#fff');
+  const bigTxt = G.evBlind > 0 ? '??' : String(Math.round(G.p));
+  ctx.fillText(bigTxt, x - w * 0.10, py + w * 1.05);
+  // 百分号小一号，跟在后面
+  const bw2 = ctx.measureText(bigTxt).width;
+  ctx.font = `800 ${Math.max(9, w * 0.30)}px ${FONT}`;
+  ctx.fillStyle = hotNow ? 'rgba(255,120,90,.95)' : 'rgba(247,239,226,.55)';
+  ctx.fillText('%', x - w * 0.10 + bw2 / 2 + w * 0.14, py + w * 1.22);
+  ctx.restore();
 
   // 一整条「圆底烧瓶」轮廓：上端半圆 + 直筒 + 圆肩 + 下半球，一笔画完，不会有多余的横线
   const tubePath = () => {
@@ -2498,23 +2509,6 @@ function drawGauge(now) {
   ctx.lineTo(x + w * 1.5 + 7, yLevel + 4);
   ctx.closePath();
   ctx.fill();
-
-  // 指针上方的实时压力读数（贴在指针上，随它上下走）
-  const rtxt = Math.round(G.p) + '%';
-  ctx.save();
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = `800 ${Math.max(9, w * 0.30)}px ${FONT}`;
-  const rw = ctx.measureText(rtxt).width + w * 0.42;
-  const ry = yLevel - w * 0.86;
-  ctx.fillStyle = 'rgba(6,8,10,.82)';
-  ctx.beginPath();
-  if (ctx.roundRect) ctx.roundRect(x - rw / 2, ry - w * 0.42, rw, w * 0.84, w * 0.24);
-  else ctx.rect(x - rw / 2, ry - w * 0.42, rw, w * 0.84);
-  ctx.fill();
-  ctx.fillStyle = G.p >= G.explodeAt - 4 ? '#ff6a4a' : '#fff';
-  ctx.fillText(rtxt, x, ry + w * 0.02);
-  ctx.restore();
   }
 
   // 维持倍率环
@@ -2532,23 +2526,15 @@ function drawGauge(now) {
     ctx.restore();
   }
 
-  // 百分比
+  // 百分比已移到面板顶部大字，这里只留维持倍率
   const pctY = bot + w * 1.35;
   ctx.textAlign = 'center';
-  if (blind) {
-    ctx.fillStyle = 'rgba(154,208,255,.9)';
-    ctx.font = `900 ${Math.max(15, w * 0.62)}px ${FONT_NUM}`;
-    ctx.fillText('??', x, pctY);
-  } else {
-    ctx.fillStyle = warn > 0.4 ? `rgba(255,${Math.round(110 - 60 * warn)},60,1)` : 'rgba(247,239,226,.92)';
-    ctx.font = `900 ${Math.max(15, w * 0.62)}px ${FONT_NUM}`;
-    ctx.fillText(Math.round(G.p) + '%', x, pctY);
-  }
 
   if (G.chain > 0.05) {
-    ctx.fillStyle = 'rgba(255,209,102,.9)';
-    ctx.font = `800 ${Math.max(9, w * 0.28)}px ${FONT}`;
-    ctx.fillText('×' + (1 + 2 * Math.min(G.chain / CFG.chainFull, 1)).toFixed(1), x, pctY + w * 0.85);
+    ctx.fillStyle = 'rgba(255,209,102,.92)';
+    ctx.font = `800 ${Math.max(9, w * 0.30)}px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('维持 ×' + (1 + 2 * Math.min(G.chain / CFG.chainFull, 1)).toFixed(1), x, pctY + w * 0.55);
   }
 }
 
