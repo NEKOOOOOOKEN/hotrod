@@ -2156,7 +2156,7 @@ function drawHand(now) {
 
   // 罐子落在手的虎口里；整只手跟着光标上下
   const x = L.cx - hw * 0.40 + ox;
-  const y = (G.handY + bob + oy) - hs * 0.54;
+  const y = (G.handY + bob + oy) - hs * 0.64;
 
   const bw = Math.ceil(hw), bh = Math.ceil(hs);
   if (handBuf.width !== bw || handBuf.height !== bh) {
@@ -2182,13 +2182,13 @@ function drawHand(now) {
   handBx.globalCompositeOperation = 'source-over';
 
   ctx.save();
-  ctx.translate(x + hw * 0.40, y + hs * 0.54);
-  ctx.rotate(-0.02 + Math.sin(now * 0.0013) * 0.006 + clamp(G.vel * 0.00002, -0.05, 0.05));
+  ctx.translate(x + hw * 0.40, y + hs * 0.64);
+  ctx.rotate(-0.12 + Math.sin(now * 0.0013) * 0.006 + clamp(G.vel * 0.00002, -0.05, 0.05));
   ctx.shadowColor = 'rgba(0,0,0,.55)';
   ctx.shadowBlur = 14 + 8 * warn;
   ctx.shadowOffsetX = 8;
   ctx.shadowOffsetY = 10;
-  ctx.drawImage(handBuf, -hw * 0.40, -hs * 0.54);
+  ctx.drawImage(handBuf, -hw * 0.40, -hs * 0.64);
   ctx.restore();
 }
 
