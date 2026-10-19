@@ -2296,18 +2296,32 @@ function drawGauge(now) {
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const hotNow = G.p >= G.explodeAt - 4;
-  ctx.font = `900 ${Math.max(16, w * 0.82)}px ${FONT}`;
-  ctx.shadowColor = hotNow ? 'rgba(255,60,20,.85)' : 'rgba(0,0,0,.85)';
-  ctx.shadowBlur = hotNow ? 16 : 6;
-  ctx.fillStyle = hotNow ? '#ff5a3c' : (G.evBlind > 0 ? 'rgba(247,239,226,.45)' : '#fff');
+  // 越接近爆炸线：越红、跳得越快越大
+  const edge = Math.max(0, G.explodeAt - G.p);
+  const near = clamp(1 - edge / 20, 0, 1);
+  const beat = 0.5 + 0.5 * Math.sin(now * (7 + 21 * near));
+  const jx = Math.sin(now * (28 + 46 * near)) * 2.0 * near * near;
+  const fs = Math.max(16, w * 0.82) * (1 + 0.13 * near * beat);
+  const gcol = Math.round(255 - 200 * near * (0.55 + 0.45 * beat));
+  const bcol = Math.round(255 - 232 * near * (0.55 + 0.45 * beat));
   const bigTxt = G.evBlind > 0 ? '??' : String(Math.round(G.p));
-  ctx.fillText(bigTxt, x - w * 0.10, py + w * 1.05);
+
+  ctx.font = `900 ${fs}px ${FONT}`;
+  ctx.shadowColor = near > 0.02
+    ? `rgba(255,${Math.round(60 - 40 * near)},16,${(0.35 + 0.65 * near) * (0.5 + 0.5 * beat)})`
+    : 'rgba(0,0,0,.85)';
+  ctx.shadowBlur = 6 + 34 * near * beat;
+  ctx.fillStyle = G.evBlind > 0
+    ? 'rgba(247,239,226,.45)'
+    : `rgb(255,${gcol},${bcol})`;
+  ctx.fillText(bigTxt, x - w * 0.10 + jx, py + w * 1.05);
   // 百分号小一号，跟在后面
   const bw2 = ctx.measureText(bigTxt).width;
   ctx.font = `800 ${Math.max(9, w * 0.30)}px ${FONT}`;
-  ctx.fillStyle = hotNow ? 'rgba(255,120,90,.95)' : 'rgba(247,239,226,.55)';
-  ctx.fillText('%', x - w * 0.10 + bw2 / 2 + w * 0.14, py + w * 1.22);
+  ctx.fillStyle = G.evBlind > 0
+    ? 'rgba(247,239,226,.35)'
+    : `rgba(255,${Math.round(200 - 170 * near * beat)},${Math.round(180 - 160 * near * beat)},${0.55 + 0.4 * near})`;
+  ctx.fillText('%', x - w * 0.10 + jx + bw2 / 2 + w * 0.14, py + w * 1.22);
   ctx.restore();
 
   // 一整条「圆底烧瓶」轮廓：上端半圆 + 直筒 + 圆肩 + 下半球，一笔画完，不会有多余的横线
