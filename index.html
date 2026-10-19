@@ -2148,7 +2148,7 @@ function drawHand(now) {
   const p = G.p / 100;
   const warn = smoothstep(0.72, 1, p);
   const hh = L.canH * (0.93 + 0.215 * Math.pow(p, 0.85));      // 与 drawCan 一致
-  const hs = hh * 0.74;
+  const hs = hh * 0.74 * (1 + 0.26 * Math.pow(p, 1.5));   // 罐子鼓起来，手也跟着张开
   const hw = hs * HAND_RATIO;
   const bob = Math.sin(now * 0.0021) * 2.2 + G.sq * 4 + Math.sin(now * 0.006) * G.sq * 2.5;
   const ox = Math.sin(now * 43) * G.shake * 0.55;
