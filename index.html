@@ -2298,8 +2298,8 @@ function drawGauge(now) {
   ctx.textBaseline = 'middle';
   // 越接近爆炸线：越红、跳得越快越大
   const edge = Math.max(0, G.explodeAt - G.p);
-  const near = clamp(1 - edge / 22, 0, 1);
-  const beat = 0.5 + 0.5 * Math.sin(now * (7 + 21 * near));
+  const near = clamp(1 - edge / 34, 0, 1);   // 从 66% 就开始上色，一路渐变到贴线
+  const beat = 0.5 + 0.5 * Math.sin(now * (5 + 24 * near));
   const jx = Math.sin(now * (28 + 46 * near)) * 4.2 * near * near;
   const fs = Math.max(16, w * 0.82) * (1 + 0.26 * near * beat);
   const gcol = Math.round(255 * (1 - 0.95 * Math.pow(near, 0.80)) * (0.90 + 0.10 * beat));
