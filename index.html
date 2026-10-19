@@ -2156,7 +2156,7 @@ function drawHand(now) {
   const oy = Math.cos(now * 57) * G.shake * 0.4;
 
   // 指头贴在罐子左缘，手掌盖住罐子右半边，手腕往右下甩
-  const gx = L.cx - hw * 0.18;
+  const gx = L.cx - hw * 0.42;
   const gy = G.handY + bob + oy;
   const x = gx + ox;
   const y = gy - hs * 0.32;
@@ -2189,6 +2189,22 @@ function drawHand(now) {
   ctx.shadowOffsetX = 10;
   ctx.shadowOffsetY = 12;
   ctx.drawImage(handBuf, -hw * 0.26, -hs * 0.32);
+
+  // 罐子其实夹在手指和手心之间：把罐子压回手心上面，手指和拇指再留在最上层
+  if (imgReady) {
+    const hh2 = L.canH * (0.93 + 0.215 * Math.pow(p, 0.85));
+    const cw2 = L.canW * (1 + 0.34 * Math.pow(p, 1.7));
+    const bw2 = Math.ceil(L.canW * 1.55), bh2 = Math.ceil(hh2);
+    ctx.save();
+    ctx.translate(L.cx - (x + hw * 0.26), L.cy - (y + hs * 0.32));
+    // 只盖手心那一片：左边留给手指、上方留给拇指
+    ctx.beginPath();
+    ctx.rect(-cw2 / 2 + cw2 * 0.10, -hh2 / 2 + hh2 * 0.30, cw2 * 0.95, hh2 * 0.72);
+    ctx.clip();
+    ctx.rotate(Math.sin(now * 1.6) * 0.007 * p);
+    ctx.drawImage(canBuf, -bw2 / 2, -bh2 / 2, bw2, bh2);
+    ctx.restore();
+  }
   ctx.restore();
 }
 
