@@ -8,7 +8,7 @@
 <title>HOT ROD · 高压撸罐</title>
 <script>
 /* 部署在网页上时：发现有新版本就自动换过去，避免看到缓存的旧页面 */
-window.BUILD_STAMP = '20261021025422';
+window.BUILD_STAMP = '20261021025729';
 (function () {
   if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
   let tries = 0;
@@ -563,7 +563,7 @@ const CFG = {
   floorStart: 14,     // 多少秒后底线开始上涨
   floorRate: 0.30,    // 底线基础上涨速度（%/秒）
   floorRateLv: 0.04,  // 每级难度加多少
-  floorMax: 50,       // 底线上限
+  floorMax: 40,       // 底线上限（HARD 地图才会涨）
   peekFirst: 15,      // 第一个探头大概什么时候来（秒）
   peekGap: [14, 21],  // 之后多久再来一次
   peekWarn: 2.6,      // 预警时长：警报 + 门响 + 满屏眼睛
@@ -573,7 +573,9 @@ const CFG = {
   visorMin: 3.0,      // 视野被压成一条缝的时长
   visorMax: 4.0,
   eventFirst: 6.5,    // 第一个随机事件的时间
-  eventGap: [7.5, 12],// 随机事件间隔
+  eventGap: [7.5, 12],// 随机事件间隔（默认）
+  eventGapEasy: [15, 23],  // EASY 地图：事件更少
+  eventGapHard: [6, 9.5],  // HARD 地图：事件更频繁
   eventMinRun: 5      // 开局多少秒内不搞事
 };
 
@@ -1325,6 +1327,7 @@ function startGame() {
   G.evLine = 0; G.evBlind = 0; G.evDouble = 0; G.evSticky = 0; G.evRush = 0; G.evBlackout = 0;
   G.evDrain = 0; G.evDark = 0; G.evVisor = 0;
   G.floor = 0; G.floorAnnounced = false; G.nearFloorCd = 0;
+  if (!G.diff) G.diff = 'hard';
   G.peekPhase = 'idle'; G.peekT = 0; G.peekIn = CFG.peekFirst + rand(-2, 3);
   G.doorOpen = 0; G.peekEyes = []; G.peekSaw = 0;
   G.darkMoves = 0;
@@ -1651,48 +1654,48 @@ window.addEventListener('blur', () => {
    ======================================================================= */
 const MAPS = [
   {
-    id: 'center', name: '中心区', x: 79.8, y: 23.3, w: 9.0,
+    id: 'center', name: '中心区', x: 79.8, y: 23.3, w: 9.0, diff: 'easy',
     prev: 'map_center', min: '35 MIN', weather: 'EASY', players: '9-12',
     desc: '塔科夫的经济中心，也是 TerraGroup 的总部驻地。这里就是一切开始的地方。自从冲突爆发以来，这里又一次成为了战事频发的热点地带。'
   },
   {
-    id: 'street', name: '塔科夫街区', x: 70.7, y: 35.7, w: 15.6,
+    id: 'street', name: '塔科夫街区', x: 70.7, y: 35.7, w: 15.6, diff: 'easy',
     prev: 'map_street', min: '50 MIN', weather: 'EASY', players: '12-16',
     desc: '塔科夫市中心，拥有所有诸如银行、购物中心和旅馆等大都市需要的便利设施。现在这些设施里挤满了想活到明天的人。'
   },
   {
-    id: 'reserve', name: '储备站', x: 40.3, y: 58.5, w: 9.0,
-    prev: 'map_reserve', min: '27 MIN', weather: 'BREEZE', players: '9-11',
+    id: 'reserve', name: '储备站', x: 40.3, y: 58.5, w: 9.0, diff: 'hard',
+    prev: 'map_reserve', min: '27 MIN', weather: 'HARD', players: '9-11',
     desc: '根据都市传说，联邦国家储备局掌握着足以维持多年自给自足的物资，包括食物、药品和其他资源，能够满足在全面核战争中长期生存的一切需求。'
   },
   {
-    id: 'inter', name: '立交桥', x: 69.7, y: 64.0, w: 9.3,
-    prev: 'map_inter', min: '35 MIN', weather: 'BREEZE', players: '11-15',
+    id: 'inter', name: '立交桥', x: 69.7, y: 64.0, w: 9.3, diff: 'hard',
+    prev: 'map_inter', min: '35 MIN', weather: 'HARD', players: '11-15',
     desc: '南部立交桥是城市交通系统的重要枢纽。这里连接着塔科夫的港口区和市郊工业区，是名副其实的战略要地。区域中央则坐落着巨型 ULTRA 购物中心。'
   },
   {
-    id: 'light', name: '灯塔', x: 15.6, y: 53.9, w: 7.2,
-    prev: 'map_light', min: '30 MIN', weather: 'BREEZE', players: '10-12',
+    id: 'light', name: '灯塔', x: 15.6, y: 53.9, w: 7.2, diff: 'hard',
+    prev: 'map_light', min: '30 MIN', weather: 'HARD', players: '10-12',
     desc: '位于 Dalniy 海角的灯塔是通往塔科夫路上极为重要的一处战略据点。在「契约战争」期间，灯塔曾是 USEC 的主要登陆地点与行动基地。'
   },
   {
-    id: 'plant', name: '工厂', x: 52.3, y: 47.3, w: 6.0,
-    prev: 'map_plant_prev', min: '15 MIN', weather: 'BREEZE', players: '7-8',
+    id: 'plant', name: '工厂', x: 52.3, y: 47.3, w: 6.0, diff: 'easy',
+    prev: 'map_plant_prev', min: '15 MIN', weather: 'EASY', players: '7-8',
     desc: '15 号化工厂的厂区和设施曾被非法租用给 Terra Group 公司。在「契约战争」期间，工厂一度成为 USEC 与 BEAR 双方争夺塔科夫市工业区控制权的激战战场。随着之后的混乱加剧，工厂变成了幸存的市民、Scav 和各种武装人员的避风港，其中也包括残存的 USEC 和 BEAR 行动人员。'
   },
   {
-    id: 'customs', name: '海关', x: 58.8, y: 53.1, w: 6.4,
-    prev: 'map_customs_prev', min: '25 MIN', weather: 'BREEZE', players: '10-12',
+    id: 'customs', name: '海关', x: 58.8, y: 53.1, w: 6.4, diff: 'hard',
+    prev: 'map_customs_prev', min: '25 MIN', weather: 'HARD', players: '10-12',
     desc: '一个位于工厂附近的大型工业园区。此区域设有海关站、燃料储存设施、办公室、宿舍以及其它基础设施，是通往塔科夫各处的必经之路。'
   },
   {
-    id: 'forest', name: '森林', x: 50.2, y: 31.1, w: 6.0,
-    prev: 'map_forest_prev', min: '25 MIN', weather: 'BREEZE', players: '10-14',
+    id: 'forest', name: '森林', x: 50.2, y: 31.1, w: 6.0, diff: 'hard',
+    prev: 'map_forest_prev', min: '25 MIN', weather: 'HARD', players: '10-14',
     desc: 'Priozersk 自然保护区最近被西北联邦行政特区划为国家野生动植物保护区。茂密的针叶林里散落着伐木营地、废弃碉堡和几条被踩出来的小路。'
   },
   {
-    id: 'shore', name: '海岸线', x: 25.9, y: 70.5, w: 9.8,
-    prev: 'map_shore_prev', min: '35 MIN', weather: 'BREEZE', players: '10-14',
+    id: 'shore', name: '海岸线', x: 25.9, y: 70.5, w: 9.8, diff: 'hard',
+    prev: 'map_shore_prev', min: '35 MIN', weather: 'HARD', players: '10-14',
     desc: '临近港口的海岸线占塔科夫郊区的很大一部分。这个区域包含被废弃的村庄、现代化私人住宅、遍布海岸线的船运设施、加油站、气象观测站、通讯基站及其他商业设施。海岸线的核心区域坐落着「蔚蓝海岸」疗养院，整座综合体由附近的水电站独立供电。'
   },
   { id: 'ice',   name: '破冰船',   x: 10.5, y: 21.9, w: 14.0, locked: true },
@@ -1786,6 +1789,7 @@ function selectMap(id) {
 function startFromMapSelect() {
   const m = MAPS.find(v => v.id === mapPick) || MAPS[0];
   G.mapName = m ? m.name : '';
+  G.diff = m && m.diff ? m.diff : 'hard';
   closeMapSelect();
   startGame();
 }
@@ -1893,7 +1897,8 @@ function update(dt, now) {
     G.eventNext -= dt;
     if (G.eventNext <= 0 && G.runT > CFG.eventMinRun) {
       rollEvent();
-      G.eventNext = rand(CFG.eventGap[0], CFG.eventGap[1]) - Math.min(2.2, (G.level - 1) * 0.28);
+      const gap = G.diff === 'easy' ? CFG.eventGapEasy : G.diff === 'hard' ? CFG.eventGapHard : CFG.eventGap;
+      G.eventNext = rand(gap[0], gap[1]) - Math.min(2.2, (G.level - 1) * 0.28);
     }
     tickEvents(dt);
 
@@ -1938,8 +1943,8 @@ function update(dt, now) {
     if (G.peekPhase === 'open') decay *= 0.28;
     G.p = Math.max(0, G.p - decay * dt);
 
-    // 底线：开局一段时间后开始慢慢往上爬
-    if (G.runT > CFG.floorStart) {
+    // 底线：只有 HARD 地图会涨（EASY 一直是 0）
+    if (G.diff === 'hard' && G.runT > CFG.floorStart) {
       const fRate = (CFG.floorRate + (G.level - 1) * CFG.floorRateLv) * (G.evDrain > 0 ? 2.6 : 1);
       G.floor = Math.min(CFG.floorMax, G.floor + fRate * dt);
       if (!G.floorAnnounced) {
