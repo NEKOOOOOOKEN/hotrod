@@ -183,10 +183,15 @@
   .eft-logo span{color:#c8231a;text-shadow:0 8px 34px rgba(0,0,0,.9), 0 0 38px rgba(232,52,26,.45)}
   .eft-sub{margin-top:8px;font-size:clamp(12px,1.4vw,16px);letter-spacing:.66em;
     text-indent:.66em;color:rgba(230,216,198,.58)}
-  .eft-banner{margin-top:clamp(16px,2.8vh,32px);display:flex;align-items:center;gap:16px;
-    padding:9px 16px;border:1px solid rgba(150,190,210,.22);
-    background:linear-gradient(180deg,rgba(15,25,29,.88),rgba(7,12,15,.94));
+  .eft-banner{margin-top:clamp(16px,2.8vh,32px);display:flex;align-items:center;justify-content:center;
+    min-width:min(340px,72vw);padding:14px 38px;border:1px solid rgba(150,190,210,.20);
+    background:linear-gradient(180deg,rgba(15,25,29,.86),rgba(7,12,15,.93));
     box-shadow:0 12px 44px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.06);}
+  .eft-best{text-align:center;line-height:1.1}
+  .eft-best span{display:block;font-size:9.5px;letter-spacing:.46em;text-indent:.46em;
+    color:rgba(190,215,225,.62)}
+  .eft-best b{display:block;margin-top:5px;font-size:clamp(22px,2.6vw,30px);font-weight:900;
+    letter-spacing:.06em;color:#f3e9d6;text-shadow:0 0 22px rgba(255,190,120,.18)}
   .eft-seal{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:2px;
     font-size:12px;font-weight:900;color:#0c1315;
     background:linear-gradient(180deg,#a6d8e4,#5d94a4);letter-spacing:0}
@@ -196,7 +201,7 @@
   .eft-stats{display:flex;gap:20px;margin-left:auto;text-align:left}
   .eft-stats div{font-size:9px;letter-spacing:.22em;color:rgba(190,215,225,.55)}
   .eft-stats b{display:block;margin-top:2px;font-size:14px;letter-spacing:.08em;color:#f2e8d4;white-space:nowrap}
-  .eft-nav{margin-top:clamp(14px,2.6vh,28px);display:flex;flex-direction:column;
+  .eft-nav{margin-top:clamp(22px,4vh,44px);display:flex;flex-direction:column;
     gap:clamp(4px,1.2vh,12px);align-items:center}
   .eft-nav button{font-family:inherit;background:none;border:0;cursor:pointer;
     padding:2px 10px;font-size:clamp(17px,2vw,23px);letter-spacing:.36em;text-indent:.36em;
@@ -239,11 +244,9 @@
     <div class="eft-sub">高 压 撸 罐</div>
 
     <div class="eft-banner">
-      <div class="eft-seal">S1</div>
-      <div class="eft-season"><span>SEASON 1</span><b>HOT ROD BREACH</b></div>
-      <div class="eft-stats">
-        <div><span>最高分</span><b id="menuBest">0</b></div>
-        <div><span>任务</span><b id="menuTask">0/5</b></div>
+      <div class="eft-best">
+        <span>最 高 分</span>
+        <b id="menuBest">0</b>
       </div>
     </div>
 
