@@ -8,7 +8,7 @@
 <title>HOT ROD · 高压撸罐</title>
 <script>
 /* 部署在网页上时：发现有新版本就自动换过去，避免看到缓存的旧页面 */
-window.BUILD_STAMP = '20261021043139';
+window.BUILD_STAMP = '20261021043548';
 (function () {
   if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
   let tries = 0;
@@ -1628,8 +1628,8 @@ function sink() {
 function pickPeekType() {
   // 三人组刷进来了：先让他们三个按顺序露完面，之后照常按概率来（scav 也会来）
   if (G.trioOn && !G.trioDone) return 'boss';
-  // BOSS 只在各自地图出现，概率随时间从 10% 爬到 70%
-  const p = 0.10 + 0.60 * clamp(G.runT / 150, 0, 1);
+  // BOSS 只在各自地图出现，概率随时间从 10% 爬到 60%（封顶）
+  const p = 0.10 + 0.50 * clamp(G.runT / 150, 0, 1);
   if (BOSS_MAP[G.mapId] !== undefined) return Math.random() < p ? 'boss' : 'scav';
   return 'scav';
 }
