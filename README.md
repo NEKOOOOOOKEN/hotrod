@@ -1,5 +1,7 @@
 # HOT ROD 高压撸罐
 
+在线玩：https://nekooooooken.github.io/hotrod/
+
 浏览器里玩的塔科夫风格小游戏：鼠标在能量饮料罐上上下撸，压力越高分越多，撸到 100% 就炸。
 
 在线玩：https://<你的用户名>.github.io/hotrod/

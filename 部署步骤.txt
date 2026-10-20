@@ -1,0 +1,89 @@
+把游戏放到网上（GitHub Pages）—— 你只需要做 4 件事
+=====================================================
+
+这个文件夹（网页版\）已经是一个 git 仓库，第一次提交已经做好了。
+剩下的只有「注册 / 建仓库 / 生成 Token / 开 Pages」必须你本人做，其它都配好了。
+
+⚠ 如果注册时弹出「为什么需要经过『我不是机器人』的验证」：
+   那是因为浏览器走了代理（那个页面上会显示代理的 IP，比如 66.90.99.58，
+   属于机房 IP，GitHub 会当成机器人）。
+   解决办法：关掉梯子/加速器用直连 → 或者换个节点 → 或者直接用手机热点/流量注册。
+   这台电脑直连 GitHub 网页是通的（刚测过 200），大概率关掉代理就好。
+
+
+第 1 步：注册 GitHub（约 3 分钟）
+--------------------------------
+1. 打开 https://github.com/signup
+2. 填邮箱 → 密码 → 用户名（英文，例如 zhangsan2026）→ 邮箱验证码
+3. 注册完记住你的「用户名」，后面要用
+
+
+第 2 步：建一个空仓库（约 1 分钟）
+--------------------------------
+1. 打开 https://github.com/new
+2. Repository name 填：hotrod
+3. 选 Public（一定要 Public，私有仓库的 Pages 要付费）
+4. 下面的 "Add a README file" 之类的勾选项全都不要勾
+5. 点 Create repository
+
+
+第 3 步：生成一个 Token（这台机器连不上 GitHub 的 SSH 端口，所以走 HTTPS）
+--------------------------------
+1. 打开 https://github.com/settings/tokens/new
+2. Note 填 hotrod，Expiration 选 30 days 或 No expiration
+3. 下面的 Scope 列表里，只勾第一个「repo」
+4. 拉到最底点 Generate token
+5. 页面上会出现一串 ghp_ 开头的字符，**只显示这一次**，复制下来存好
+
+
+第 4 步：双击推上去（我来跑也行）
+--------------------------------
+双击本文件夹里的「推送到GitHub.bat」：
+   - 输入 GitHub 用户名
+   - 仓库名直接回车（默认 hotrod）
+   - 粘 Token，回车
+
+成功的话窗口里会打印出网址，形如：
+    https://你的用户名.github.io/hotrod/
+
+
+第 5 步：打开 Pages（只有网页版这一下需要你点）
+--------------------------------
+（其实第 4 步成功后如果提示还要设置，就去）
+1. 打开 https://github.com/你的用户名/hotrod/settings/pages
+2. Source 选 Deploy from a branch
+3. Branch 选 main，右边目录选 / (root)，点 Save
+4. 等 1~2 分钟，刷新上面的网址，就能玩了
+
+
+以后改了游戏怎么办
+------------------
+把新的 热棒撸罐.html 复制成 网页版\index.html，然后在这个文件夹里执行：
+
+    git add -A
+    git commit -m "更新"
+    git push
+
+网站会自动更新（1 分钟左右）。手机打开那个网址，用浏览器菜单「添加到主屏幕」，
+点开就是全屏，跟 App 一样。
+
+
+备注
+----
+- 这个仓库里只有一个 index.html（640 KB 的游戏本体，图片和音效都在里面）和一个 README。
+- 想改仓库名 / 换账号：直接改 push.py 里问的那两个值，或者删掉 .git 重新来（不推荐）。
+- 不想用 GitHub 也行，同样的 index.html 丢到 Netlify Drop（https://app.netlify.com/drop）
+  拖一下就有网址，连注册都能用 GitHub 账号一键登。
+
+
+========================================
+已完成（2026-10-20）
+========================================
+仓库： https://github.com/NEKOOOOOOKEN/hotrod
+网址： https://nekooooooken.github.io/hotrod/
+Pages 配置： Deploy from a branch → main → / (root)
+
+以后更新网页（两种任选）：
+  A. 双击「推送到GitHub.bat」，按提示贴 Token（只需一次），之后 git push 就行。
+  B. 直接在 github.com 仓库页 Add file → Upload files，覆盖 index.html。
+推上去 1~2 分钟后网址自动更新（可以在 Actions 里看 build/deploy 状态）。
