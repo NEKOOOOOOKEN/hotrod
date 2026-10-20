@@ -114,8 +114,13 @@ def main():
             code, out = run(base + ["-c", "http.proxy=http://" + PROXY_ADDR,
                                     "push", url, "main:main"], timeout=300)
     if code != 0:
-        say("推送失败（上面的输出里一般能看到原因：token 过期 / 没网 / 仓库名不对）")
-        return 1
+        # git push 走 github.com:443，这台机器这条路经常不通 → 改走 api.github.com
+        say("git push 不通，改走 GitHub API 推送…")
+        code2, _ = run([sys.executable, str(HERE / "api推送.py"), msg], timeout=600)
+        if code2 != 0:
+            say("API 推送也失败了，看上面的输出")
+            return 1
+        return 0
 
     say("推送成功。等 1~2 分钟 Pages 重建，然后打开：")
     say("https://nekooooooken.github.io/hotrod/?v=%d" % int(time.time()))
