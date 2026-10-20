@@ -8,7 +8,7 @@
 <title>HOT ROD · 高压撸罐</title>
 <script>
 /* 部署在网页上时：发现有新版本就自动换过去，避免看到缓存的旧页面 */
-window.BUILD_STAMP = '20261021023447';
+window.BUILD_STAMP = '20261021023554';
 (function () {
   if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
   let tries = 0;
@@ -315,11 +315,22 @@ window.BUILD_STAMP = '20261021023447';
     .ms-prev{aspect-ratio:620/180}
   }
   @media (max-width:760px){
-    .ms-body{flex-direction:column;gap:8px;overflow:auto}
-    .ms-map{max-width:100%;aspect-ratio:1010/760;height:auto}
-    .ms-info{max-width:none;align-items:center;text-align:center}
-    .ms-prev{max-width:340px}
-    .ms-foot{flex-direction:column;align-items:centre;gap:10px}
+    .ms-wrap{height:100%;padding:8px 12px}
+    .ms-head{margin-bottom:4px}
+    .ms-head h2{font-size:21px}
+    .ms-head span{font-size:9px}
+    .ms-body{flex-direction:column;gap:6px;overflow-y:auto;align-items:center}
+    .ms-map{max-width:100%;aspect-ratio:1010/880;height:auto;flex:0 0 auto}
+    .ms-info{max-width:none;width:100%;align-items:center;text-align:center;gap:5px;flex:0 0 auto}
+    .ms-prev{max-width:300px}
+    .ms-info h3{font-size:17px;letter-spacing:.18em}
+    .ms-info p{font-size:11px;line-height:1.7;max-height:6.2em}
+    .ms-stats{font-size:11px;gap:14px;letter-spacing:.1em}
+    .ms-slot{font-size:22px}
+    .ms-tof-row{gap:20px}
+    .ms-foot{flex-direction:column;align-items:center;gap:6px;margin-top:6px}
+    #btnMapStart{padding:10px 40px;font-size:14px}
+    #btnMapBack{padding:9px 18px;font-size:12px}
   }
 </style>
 </head>
