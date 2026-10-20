@@ -8,7 +8,7 @@
 <title>HOT ROD · 高压撸罐</title>
 <script>
 /* 部署在网页上时：发现有新版本就自动换过去，避免看到缓存的旧页面 */
-window.BUILD_STAMP = '20261021025110';
+window.BUILD_STAMP = '20261021025422';
 (function () {
   if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
   let tries = 0;
@@ -277,11 +277,11 @@ window.BUILD_STAMP = '20261021025110';
   .ms-hot{position:absolute;inset:0}
   .ms-hot button{position:absolute;transform:translateY(-50%);border:1px solid transparent;background:none;
     border-radius:2px;padding:2px 6px;cursor:pointer;color:transparent;
-    font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:clamp(9px,1.55vh,14px);
-    line-height:1.1;text-align:center;transition:background .15s,border-color .15s}
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:clamp(10px,1.78vh,16px);
+    line-height:1;text-align:center;white-space:nowrap;transition:background .15s,border-color .15s}
   .ms-hot button:hover{border-color:rgba(216,207,174,.32);background:rgba(216,207,174,.06)}
-  .ms-hot button.sel{border-color:#e2d7b4;background:#ddd2ad;color:#1b1710;font-weight:700;
-    letter-spacing:.16em;box-shadow:0 0 26px rgba(226,215,180,.28)}
+  .ms-hot button.sel{border-color:rgba(232,221,190,.92);background:rgba(226,215,180,.16);
+    color:transparent;box-shadow:0 0 22px rgba(226,215,180,.18),inset 0 0 18px rgba(226,215,180,.10)}
   .ms-hot button.locked{cursor:not-allowed}
   .ms-hot button.locked:hover{border-color:rgba(120,120,120,.22);background:rgba(120,120,120,.05)}
 
@@ -1651,47 +1651,47 @@ window.addEventListener('blur', () => {
    ======================================================================= */
 const MAPS = [
   {
-    id: 'center', name: '中心区', x: 79.2, y: 23.2, w: 10.5,
+    id: 'center', name: '中心区', x: 79.8, y: 23.3, w: 9.0,
     prev: 'map_center', min: '35 MIN', weather: 'EASY', players: '9-12',
     desc: '塔科夫的经济中心，也是 TerraGroup 的总部驻地。这里就是一切开始的地方。自从冲突爆发以来，这里又一次成为了战事频发的热点地带。'
   },
   {
-    id: 'street', name: '塔科夫街区', x: 71.0, y: 36.0, w: 19.0,
+    id: 'street', name: '塔科夫街区', x: 70.7, y: 35.7, w: 15.6,
     prev: 'map_street', min: '50 MIN', weather: 'EASY', players: '12-16',
     desc: '塔科夫市中心，拥有所有诸如银行、购物中心和旅馆等大都市需要的便利设施。现在这些设施里挤满了想活到明天的人。'
   },
   {
-    id: 'reserve', name: '储备站', x: 39.8, y: 59.1, w: 13.5,
+    id: 'reserve', name: '储备站', x: 40.3, y: 58.5, w: 9.0,
     prev: 'map_reserve', min: '27 MIN', weather: 'BREEZE', players: '9-11',
     desc: '根据都市传说，联邦国家储备局掌握着足以维持多年自给自足的物资，包括食物、药品和其他资源，能够满足在全面核战争中长期生存的一切需求。'
   },
   {
-    id: 'inter', name: '立交桥', x: 68.8, y: 64.5, w: 9.5,
+    id: 'inter', name: '立交桥', x: 69.7, y: 64.0, w: 9.3,
     prev: 'map_inter', min: '35 MIN', weather: 'BREEZE', players: '11-15',
     desc: '南部立交桥是城市交通系统的重要枢纽。这里连接着塔科夫的港口区和市郊工业区，是名副其实的战略要地。区域中央则坐落着巨型 ULTRA 购物中心。'
   },
   {
-    id: 'light', name: '灯塔', x: 16.3, y: 54.4, w: 8.0,
+    id: 'light', name: '灯塔', x: 15.6, y: 53.9, w: 7.2,
     prev: 'map_light', min: '30 MIN', weather: 'BREEZE', players: '10-12',
     desc: '位于 Dalniy 海角的灯塔是通往塔科夫路上极为重要的一处战略据点。在「契约战争」期间，灯塔曾是 USEC 的主要登陆地点与行动基地。'
   },
   {
-    id: 'plant', name: '工厂', x: 51.0, y: 48.2, w: 6.5,
+    id: 'plant', name: '工厂', x: 52.3, y: 47.3, w: 6.0,
     prev: 'map_plant_prev', min: '15 MIN', weather: 'BREEZE', players: '7-8',
     desc: '15 号化工厂的厂区和设施曾被非法租用给 Terra Group 公司。在「契约战争」期间，工厂一度成为 USEC 与 BEAR 双方争夺塔科夫市工业区控制权的激战战场。随着之后的混乱加剧，工厂变成了幸存的市民、Scav 和各种武装人员的避风港，其中也包括残存的 USEC 和 BEAR 行动人员。'
   },
   {
-    id: 'customs', name: '海关', x: 58.3, y: 53.6, w: 7.5,
+    id: 'customs', name: '海关', x: 58.8, y: 53.1, w: 6.4,
     prev: 'map_customs_prev', min: '25 MIN', weather: 'BREEZE', players: '10-12',
     desc: '一个位于工厂附近的大型工业园区。此区域设有海关站、燃料储存设施、办公室、宿舍以及其它基础设施，是通往塔科夫各处的必经之路。'
   },
   {
-    id: 'forest', name: '森林', x: 50.0, y: 31.4, w: 6.5,
+    id: 'forest', name: '森林', x: 50.2, y: 31.1, w: 6.0,
     prev: 'map_forest_prev', min: '25 MIN', weather: 'BREEZE', players: '10-14',
     desc: 'Priozersk 自然保护区最近被西北联邦行政特区划为国家野生动植物保护区。茂密的针叶林里散落着伐木营地、废弃碉堡和几条被踩出来的小路。'
   },
   {
-    id: 'shore', name: '海岸线', x: 25.4, y: 71.2, w: 13.5,
+    id: 'shore', name: '海岸线', x: 25.9, y: 70.5, w: 9.8,
     prev: 'map_shore_prev', min: '35 MIN', weather: 'BREEZE', players: '10-14',
     desc: '临近港口的海岸线占塔科夫郊区的很大一部分。这个区域包含被废弃的村庄、现代化私人住宅、遍布海岸线的船运设施、加油站、气象观测站、通讯基站及其他商业设施。海岸线的核心区域坐落着「蔚蓝海岸」疗养院，整座综合体由附近的水电站独立供电。'
   },
@@ -1752,7 +1752,7 @@ function buildMapHotspots() {
     b.style.left = m.x + '%';
     b.style.top = m.y + '%';
     b.style.width = m.w + '%';
-    b.style.height = '4.6%';
+    b.style.height = '4.2%';
     b.style.fontSize = '11px';
     if (m.locked) b.className = 'locked';
     b.title = m.locked ? (m.name + ' · 尚未可用') : m.name;
