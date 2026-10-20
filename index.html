@@ -6,6 +6,25 @@
 <meta name="description" content="HOT ROD 高压撸罐：鼠标在能量饮料罐上上下撸，压力越高分越多，撸到 100% 就炸。单文件离线小游戏。">
 <meta name="theme-color" content="#0b0908">
 <title>HOT ROD · 高压撸罐</title>
+<script>
+/* 部署在网页上时：发现有新版本就自动换过去，避免看到缓存的旧页面 */
+window.BUILD_STAMP = '20261021020913';
+(function () {
+  if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+  try {
+    fetch(location.pathname + '?fresh=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.text())
+      .then(t => {
+        const m = t.match(/BUILD_STAMP\s*=\s*'([^']+)'/);
+        if (!m || m[1] === window.BUILD_STAMP) return;
+        const u = new URL(location.href);
+        u.searchParams.set('v', m[1].replace(/[^0-9]/g, ''));
+        location.replace(u.toString());
+      })
+      .catch(() => { });
+  } catch (e) { }
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='17' y='6' width='30' height='52' rx='7' fill='%23cfe6e6' stroke='%23555' stroke-width='2'/%3E%3Crect x='17' y='14' width='30' height='5' fill='%23e0271c'/%3E%3Ctext x='32' y='42' font-family='Arial Black,Arial' font-size='17' font-weight='900' fill='%23c81f16' text-anchor='middle'%3EHR%3C/text%3E%3C/svg%3E">
 <style>
   *{box-sizing:border-box}
